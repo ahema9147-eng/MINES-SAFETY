@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Mine Subsidence AI</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            background: #eef2f7;
+            color: #1e293b;
+        }
+
+
+        /* HEADER */
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+
+
+        header h1 {
+            font-size: 30px;
+        }
+
+
+        header p {
+            margin-top: 8px;
+            color: #cbd5e1;
+        }
+
+
+        /* CONTAINER */
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 30px auto;
+        }
+
+
+        /* INFO */
+
+        .info {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+
+        .info span {
+            font-weight: bold;
+        }
+
+
+        /* SENSOR GRID */
+
+        .sensor-grid {
+
+            display: grid;
+
+            grid-template-columns:
+            repeat(auto-fit, minmax(200px, 1fr));
+
+            gap: 18px;
+        }
+
+
+        /* SENSOR CARD */
+
+        .card {
+
+            background: white;
+
+            padding: 22px;
+
+            border-radius: 15px;
+
+            box-shadow:
+            0 5px 15px rgba(0,0,0,0.08);
+        }
+
+
+        .card h3 {
+
+            margin-bottom: 12px;
+
+            font-size: 18px;
+        }
+
+
+        .card input {
+
+            width: 100%;
+
+            padding: 13px;
+
+            border: 1px solid #cbd5e1;
+
+            border-radius: 8px;
+
+            font-size: 17px;
+        }
+
+
+        /* BUTTON */
+
+        .button-area {
+
+            text-align: center;
+
+            margin: 30px 0;
+        }
+
+
+        button {
+
+            background: #2563eb;
+
+            color: white;
+
+            border: none;
+
+            padding: 15px 40px;
+
+            border-radius: 10px;
+
+            font-size: 18px;
+
+            cursor: pointer;
+        }
+
+
+        button:hover {
+
+            background: #1d4ed8;
+        }
+
+
+        /* RESULT */
+
+        .result {
+
+            background: white;
+
+            padding: 30px;
+
+            border-radius: 18px;
+
+            text-align: center;
+
+            box-shadow:
+            0 5px 20px rgba(0,0,0,0.1);
+        }
+
+
+        .result h2 {
+
+            margin-bottom: 15px;
+        }
+
+
+        #riskStatus {
+
+            font-size: 38px;
+
+            font-weight: bold;
+
+            margin: 15px;
+        }
+
+
+        #riskCode {
+
+            color: #64748b;
+
+            font-size: 18px;
+        }
+
+
+        #confidence {
+
+            margin-top: 10px;
+
+            font-size: 18px;
+
+            font-weight: bold;
+        }
+
+
+        #message {
+
+            margin-top: 15px;
+
+            padding: 15px;
+
+            background: #f8fafc;
+
+            border-radius: 10px;
+        }
+
+
+        /* STATUS COLORS */
+
+        .normal {
+
+            color: green;
+        }
+
+
+        .warning {
+
+            color: orange;
+        }
+
+
+        .high {
+
+            color: red;
+        }
+
+
+        /* FOOTER */
+
+        footer {
+
+            text-align: center;
+
+            padding: 25px;
+
+            color: #64748b;
+        }
+
+
+        /* MOBILE */
+
+        @media(max-width:600px) {
+
+            header h1 {
+
+                font-size: 22px;
+            }
+
+            .container {
+
+                width: 94%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- HEADER -->
+
+<header>
+
+    <h1>⛏️ MINE SUBSIDENCE AI SYSTEM</h1>
+
+    <p>
+        AI-Based Mine Risk Prediction Dashboard
+    </p>
+
+</header>
+
+
+
+<div class="container">
+
+
+    <!-- MODEL INFO -->
+
+    <div class="info">
+
+        <p>
+            🤖 Random Forest AI Model
+            &nbsp; | &nbsp;
+
+            Model Accuracy:
+
+            <span>{{ accuracy }}%</span>
+        </p>
+
+    </div>
+
+
+
+    <!-- SENSOR INPUT -->
+
+    <div class="sensor-grid">
+
+
+        <div class="card">
+
+            <h3>📐 Tilt X</h3>
+
+            <input
+                type="number"
+                id="tilt_x"
+                value="2.1"
+                step="0.1"
+                min="0"
+            >
+
+        </div>
+
+
+
+        <div class="card">
+
+            <h3>📐 Tilt Y</h3>
+
+            <input
+                type="number"
+                id="tilt_y"
+                value="1.8"
+                step="0.1"
+                min="0"
+            >
+
+        </div>
+
+
+
+        <div class="card">
+
+            <h3>📳 Vibration</h3>
+
+            <input
+                type="number"
+                id="vibration"
+                value="7"
+                step="0.1"
+                min="0"
+            >
+
+        </div>
+
+
+
+        <div class="card">
+
+            <h3>📏 Displacement</h3>
+
+            <input
+                type="number"
+                id="displacement"
+                value="4.5"
+                step="0.1"
+                min="0"
+            >
+
+        </div>
+
+
+
+        <div class="card">
+
+            <h3>⚠️ Crack</h3>
+
+            <input
+                type="number"
+                id="crack"
+                value="1"
+                step="0.1"
+                min="0"
+            >
+
+        </div>
+
+    </div>
+
+
+
+    <!-- BUTTON -->
+
+    <div class="button-area">
+
+        <button onclick="checkRisk()">
+
+            🔍 CHECK RISK
+
+        </button>
+
+    </div>
+
+
+
+    <!-- RESULT -->
+
+    <div class="result">
+
+        <h2>AI RISK STATUS</h2>
+
+
+        <div id="riskStatus"
+             class="normal">
+
+            NORMAL
+
+        </div>
+
+
+        <div id="riskCode">
+
+            Risk Code: 0
+
+        </div>
+
+
+        <div id="confidence">
+
+            AI Confidence: --
+
+        </div>
+
+
+        <p id="message">
+
+            Enter sensor values and click
+            CHECK RISK.
+
+        </p>
+
+    </div>
+
+</div>
+
+
+
+<footer>
+
+    <p>
+        Mine Subsidence Prediction using Random Forest AI
+    </p>
+
+</footer>
+
+
+
+<script>
+
+
+async function checkRisk() {
+
+
+    // Get sensor values
+
+    const data = {
+
+        tilt_x:
+        Number(
+            document.getElementById("tilt_x").value
+        ),
+
+        tilt_y:
+        Number(
+            document.getElementById("tilt_y").value
+        ),
+
+        vibration:
+        Number(
+            document.getElementById("vibration").value
+        ),
+
+        displacement:
+        Number(
+            document.getElementById("displacement").value
+        ),
+
+        crack:
+        Number(
+            document.getElementById("crack").value
+        )
+
+    };
+
+
+    try {
+
+
+        // Send data to Flask backend
+
+        const response = await fetch(
+            "/predict",
+            {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                    "application/json"
+                },
+
+                body:
+                JSON.stringify(data)
+
+            }
+        );
+
+
+        const result =
+        await response.json();
+
+
+        if (result.error) {
+
+            alert(result.error);
+
+            return;
+
+        }
+
+
+        // Display result
+
+        showResult(
+
+            result.prediction,
+
+            result.risk_code,
+
+            result.confidence,
+
+            result.message
+
+        );
+
+
+    }
+
+    catch (error) {
+
+        alert(
+            "Backend connection failed. Make sure Flask server is running."
+        );
+
+        console.log(error);
+
+    }
+
+}
+
+
+
+function showResult(
+    prediction,
+    riskCode,
+    confidence,
+    message
+) {
+
+
+    const status =
+    document.getElementById(
+        "riskStatus"
+    );
+
+
+    const code =
+    document.getElementById(
+        "riskCode"
+    );
+
+
+    const confidenceBox =
+    document.getElementById(
+        "confidence"
+    );
+
+
+    const messageBox =
+    document.getElementById(
+        "message"
+    );
+
+
+    // Set prediction
+
+    status.innerText =
+    prediction;
+
+
+    code.innerText =
+    "Risk Code: " + riskCode;
+
+
+    confidenceBox.innerText =
+    "AI Confidence: " +
+    confidence +
+    "%";
+
+
+    messageBox.innerText =
+    message;
+
+
+    // Remove old classes
+
+    status.className = "";
+
+
+    // Add new class
+
+    if (riskCode === 0) {
+
+        status.classList.add(
+            "normal"
+        );
+
+    }
+
+    else if (riskCode === 1) {
+
+        status.classList.add(
+            "warning"
+        );
+
+    }
+
+    else {
+
+        status.classList.add(
+            "high"
+        );
+
+    }
+
+}
+</script>
+</body>
+</html>
